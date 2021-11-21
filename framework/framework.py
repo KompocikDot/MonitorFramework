@@ -10,49 +10,61 @@ class Framework:
      def __init__(self):
           self.csv_data = []
           self.start = True
-          self.SetStartVals()
           self.processes = []
+          self.SetStartVals()
           self.SetIds()
 
      def Run(self, *args) -> None:
-          Process(target=self.CheckProcess).start()
+          self.CheckProcess()
 
      def CheckProcess(self):
-          if self.start:
-               self.start = False
-
-               for x in self.csv_data:
-                    match x['shop'].lower():
-                         case 'aboutyou':
-                              p = Process(target=AboutYou.Start, args=(x['url'], int(x['timeout']),))
-                         case _:
-                              print('Unknown shop')
-                              continue
-
-                    self.processes.append({'id': x['id'], 'process': p})
+          while True:
+               if self.start:
+                    self.start = False
+                    p = Process(target=self.CheckProcess)
+                    self.processes.append({'id': 'MAIN', 'process': p})
                     
-               for x in self.processes:
-                    x['process'].start()
-                    print('wystartowano')
+                    for x in self.csv_data:
+                         match x['shop'].lower():
+                              case 'aboutyou':
+                                   p = Process(target=AboutYou, args=(x['url'], int(x['timeout'])))
+                              case _:
+                                   print('Unknown shop')
+                                   
 
-          else:
-               csv_ids = []
-               processes_ids = []
-               for x in self.csv_data:
-                    csv_ids.append(x['id'])
-               for x in self.processes:
-                    processes_ids.append(x['id'])
+                         self.processes.append({'id': x['id'], 'process': p})
 
-               difference = list(set(processes_ids) - set(csv_ids))
-               
-               if len(difference) > 0:
-                    for id in difference:
-                         self.TerminateProcess(id)
+                    for x in self.processes:
+                         x['process'].start()
+
+               else:
+                    self.ReadIds()
+                    csv_ids, processes_ids = [], []
+                    for x in self.csv_data:
+                         csv_ids.append(x['id'])
+                    for x in self.processes:
+                         processes_ids.append(x['id'])
+
+                    difference = list(set(processes_ids) - set(csv_ids))
+                    print(difference)
+                    if len(difference) > 0:
+                         for id in difference:
+                              if id != "MAIN":
+                                   print(f"terminating {id =}")
+                                   self.TerminateProcess(id)
+
+                    sleep(self.check_changes)
 
      def TerminateProcess(self, id: str):
-          for x in self.processes:
-               if self.processes['id'] == id:
-                    x['process'].terminate()
+          print(self.processes)
+          for index, value in enumerate(self.processes):
+               if value['id'] == id:
+                    try:
+                         value['process'].terminate()
+                    except AttributeError:
+                         self.processes.pop(index)
+                         print(self.processes)
+                         pass
 
      def ReadIds(self):
           self.csv_data = []

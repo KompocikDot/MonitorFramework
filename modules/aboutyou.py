@@ -1,10 +1,12 @@
 from time import sleep
 
 class AboutYou:
-     def __init__(self):
-          pass
+     def __init__(self, url: str, timeout: int):
+          self.url = url
+          self.timeout = timeout
+          self.Start()
 
-     def Start(url: str, timeout: int):
+     def Start(self):
           while True:
-               print(url)
-               sleep(timeout)
+               print(self.url)
+               sleep(self.timeout)

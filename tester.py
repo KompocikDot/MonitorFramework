@@ -1,4 +1,16 @@
-processes = ["1", '2', '3']
-csv = ["2", "4", "5"]
+from multiprocessing import Process
+from time import sleep
 
-print(list(set(csv) - set(processes)))
+def loop():
+     l = 0
+     while True:
+          print(l)
+          l += 1
+          sleep(1)
+
+def main():
+     for x in range(5):
+          Process(target=)
+
+if __name__ == '__main__':
+     main()
