@@ -1,9 +1,9 @@
 from time import sleep
 
 class AboutYou:
-     def __init__(self, url: str, timeout: int):
+     def __init__(self, url: str, timeout: str):
           self.url = url
-          self.timeout = timeout
+          self.timeout = int(timeout)
           self.Start()
 
      def Start(self):
