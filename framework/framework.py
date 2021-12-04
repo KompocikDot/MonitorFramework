@@ -75,7 +75,7 @@ class Framework:
     def runNew(self, custom_list=[]) -> None:
         if not custom_list:
             for x in self.csv_data:
-                new = KThread(target=self.placeholder , args=(x,), name=x['id'])
+                new = KThread(target=self.placeholder , args=(x, self.webhook_url), name=x['id'])
                 self.threads[new.name] = new
                 self.threads[x['id']].start()
                 logging.info(f"Successfully added thread id{x['id']:}")
@@ -83,7 +83,7 @@ class Framework:
         else:
             for indx, x in enumerate(custom_list):
                 self.added[indx]['id'] = b2a_hex(urandom(15)).decode('utf-8')
-                new = KThread(target=self.placeholder , args=(x,), name=x['id'])
+                new = KThread(target=self.placeholder , args=(x, self.webhook_url), name=x['id'])
                 self.threads[new.name] = new
                 self.threads[x['id']].start()
                 logging.info(f"Successfully added thread id{x['id']:}")
@@ -109,7 +109,7 @@ class Framework:
             del self.threads[x['id']]
             logging.info(f"Successfully removed thread id{x['id']:}")
 
-    def placeholder(self, x) -> None:
+    def placeholder(self, x, y) -> None:
         while True:
             logging.info('bla bla')
             sleep(2)
