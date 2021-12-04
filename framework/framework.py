@@ -12,19 +12,19 @@ logging.basicConfig(format="[%(asctime)s] [Thread: %(threadName)s] [%(message)s]
 
 class Framework:
     def __init__(self):
-        self.initSettings()
-        self.Read(init=True)
-        self.Check()
-        self.mainProcess()       
+        self.init_settings()
+        self.read(init=True)
+        self.check()
+        self.main_process()       
 
-    def initSettings(self):
+    def init_settings(self):
         with open('settings.json') as f:
             jsn = load(f)
 
         self.checkdiffs = jsn['changes']
         self.webhook_url = jsn['webhook']
 
-    def Read(self, init=False) -> list | None:
+    def read(self, init=False) -> list | None:
         if init:
             self.csv_data = []
             with open('links.csv', newline='') as f:
@@ -39,7 +39,7 @@ class Framework:
             return temp
 
 
-    def Check(self) -> None:
+    def check(self) -> None:
         changes = 0
         for x in self.csv_data:
             if x['id'] == '':
@@ -47,24 +47,24 @@ class Framework:
                 changes += 1
             
         if changes > 0:
-            self.setCsvIds()
+            self.set_csv_ids()
 
-    def setCsvIds(self) -> None:
+    def set_csv_ids(self) -> None:
         with open('links.csv', 'w', newline='') as f:
             writer = DictWriter(f, fieldnames=["shop", "url", "timeout", "id"])
             writer.writeheader()
             for x in self.csv_data:
                 writer.writerow(x)
 
-    def mainProcess(self) -> None:
-        KThread(target=self.mainChecker, name="main").start()
+    def main_process(self) -> None:
+        KThread(target=self.main_checker, name="main").start()
         
-    def mainChecker(self) -> None:
+    def main_checker(self) -> None:
         self.threads = {}
         try:
-            self.runNew()
+            self.run_new()
             while True:
-                self.checkDifferences()
+                self.check_differences()
                 sleep(self.checkdiffs)
 
 
@@ -72,7 +72,7 @@ class Framework:
             logging.error(f"Main process crashed [{e}] | Turning off the app")
             exit()    
 
-    def runNew(self, custom_list=[]) -> None:
+    def run_new(self, custom_list=[]) -> None:
         if not custom_list:
             for x in self.csv_data:
                 new = KThread(target=self.placeholder , args=(x, self.webhook_url), name=x['id'])
@@ -88,22 +88,22 @@ class Framework:
                 self.threads[x['id']].start()
                 logging.info(f"Successfully added thread id{x['id']:}")
 
-    def checkDifferences(self) -> None:
-        new_iter = self.Read()
+    def check_differences(self) -> None:
+        new_iter = self.read()
         self.added = [x for x in new_iter if x not in self.csv_data]
         removed = [x for x in self.csv_data if x not in new_iter]
         
         if self.added:
-            self.Check()
-            self.runNew(self.added)
+            self.check()
+            self.run_new(self.added)
             self.csv_data = new_iter
-            self.setCsvIds()
+            self.set_csv_ids()
 
         if removed:
-            self.killThreads(removed)
+            self.kill_threads(removed)
             self.csv_data = new_iter
 
-    def killThreads(self, to_remove: list) -> None:
+    def kill_threads(self, to_remove: list) -> None:
         for x in to_remove:
             self.threads[x['id']].terminate()
             del self.threads[x['id']]
