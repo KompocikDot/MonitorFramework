@@ -1,7 +1,7 @@
 from framework.framework import Framework
 
 def main():
-     Framework().run()
+     Framework()
 
 if __name__ == '__main__':
      main()

@@ -1,16 +1,15 @@
-from multiprocessing import Process
-from time import sleep
+listastara = [{'t': 1}, {'t': 2}, {'t': 3}]
+listanowa = [{'t': 1}, {'t': 2}]
 
-def loop():
-     l = 0
-     while True:
-          print(l)
-          l += 1
-          sleep(1)
+added = [x for x in listanowa if x not in listastara]
+removed = [x for x in listastara if x not in listanowa]
+# for x in listanowa:
+#      if x in listastara:
+#           print(x, 'jest')
+if added:
+     print("Ma nowe elementy", added)
 
-def main():
-     for x in range(5):
-          Process(target=)
-
-if __name__ == '__main__':
-     main()
+if removed:
+     print("Ma usuniete elementy", removed)
+# else:
+#      print("Nie ma", dif)
