@@ -66,7 +66,7 @@ class Framework:
         while True:
             self.checkDifferences()
             sleep(self.checkdiffs)
-            
+
 
         # except Exception as e:
         #     logging.error(f"Main process crashed [{e}] | Turning off the app")
@@ -88,7 +88,7 @@ class Framework:
                 self.threads[x['id']].start()
                 logging.info(f"Successfully added thread id{x['id']:}")
 
-    def checkDifferences(self):
+    def checkDifferences(self) -> None:
         new_iter = self.Read()
         self.added = [x for x in new_iter if x not in self.csv_data]
         removed = [x for x in self.csv_data if x not in new_iter]
@@ -103,13 +103,13 @@ class Framework:
             self.killThreads(removed)
             self.csv_data = new_iter
 
-    def killThreads(self, to_remove: list):
+    def killThreads(self, to_remove: list) -> None:
         for x in to_remove:
             self.threads[x['id']].terminate()
             del self.threads[x['id']]
             logging.info(f"Successfully removed thread id{x['id']:}")
 
-    def placeholder(self, x):
+    def placeholder(self, x) -> None:
         while True:
             logging.info('bla bla')
             sleep(2)
