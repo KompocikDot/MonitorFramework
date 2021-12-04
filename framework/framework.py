@@ -61,16 +61,16 @@ class Framework:
         
     def mainChecker(self) -> None:
         self.threads = {}
-        # try:
-        self.runNew()
-        while True:
-            self.checkDifferences()
-            sleep(self.checkdiffs)
+        try:
+            self.runNew()
+            while True:
+                self.checkDifferences()
+                sleep(self.checkdiffs)
 
 
-        # except Exception as e:
-        #     logging.error(f"Main process crashed [{e}] | Turning off the app")
-        #     exit()    
+        except Exception as e:
+            logging.error(f"Main process crashed [{e}] | Turning off the app")
+            exit()    
 
     def runNew(self, custom_list=[]) -> None:
         if not custom_list:
